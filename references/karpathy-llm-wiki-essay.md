@@ -6,9 +6,11 @@ tags:
   - llm
   - knowledge-management
   - source
+url: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 summary: An informal essay by Andrej Karpathy describing the LLM Wiki pattern — the founding source for this vault's architecture, conventions, and skill set.
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
 created: 2026-06-06T10:16:21Z
 updated: 2026-06-06T10:16:21Z
 base_confidence: 0.7
@@ -30,8 +32,10 @@ relationships:
 
 The source essay that defines the [[concepts/llm-wiki-pattern]]. This page is the provenance anchor: anything in this vault tagged "from the essay" traces back here.
 
+**URL:** <https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f>
+
 ## Type
-Informal essay (markdown, intended for copy-paste into an LLM agent). Self-described as "an idea file."
+Informal essay (markdown gist, intended for copy-paste into an LLM agent). Self-described as "an idea file."
 
 ## Purpose (in the author's words)
 
