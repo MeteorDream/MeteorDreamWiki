@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "last_updated": "2026-06-06T10:16:21Z",
+  "sources": {
+    "_raw/llm/knowledge/karpathy_llm_wiki.md": {
+      "ingested_at": "2026-06-06T10:16:21Z",
+      "size_bytes": 11984,
+      "modified_at": "2026-06-06T10:11:40Z",
+      "content_hash": "sha256:a402e64fc0c46e618b01acc3502f18a992b4a42222bfd7f87c9abbee3801c98f",
+      "source_type": "document",
+      "project": null,
+      "pages_created": [
+        "concepts/llm-wiki-pattern.md",
+        "concepts/three-layer-architecture.md",
+        "concepts/rag-vs-llm-wiki.md",
+        "concepts/persistent-knowledge-graph.md",
+        "entities/andrej-karpathy.md",
+        "entities/vannevar-bush.md",
+        "entities/obsidian.md",
+        "entities/qmd.md",
+        "references/karpathy-llm-wiki-essay.md",
+        "references/memex.md",
+        "skills/wiki-operations-trinity.md",
+        "skills/index-and-log-files.md"
+      ],
+      "pages_updated": [
+        "index.md",
+        "hot.md"
+      ],
+      "raw_origin": true,
+      "promoted_from": "_raw/llm/knowledge/karpathy_llm_wiki.md",
+      "deleted_after_promotion": true
+    }
+  },
+  "projects": {},
+  "stats": {
+    "total_sources_ingested": 1,
+    "total_pages": 12,
+    "total_projects": 0,
+    "last_full_rebuild": null
+  }
+}
