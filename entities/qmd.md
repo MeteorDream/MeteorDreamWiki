@@ -9,9 +9,10 @@ tags:
 summary: A local search engine for markdown files with hybrid BM25/vector search and LLM re-ranking. Provides both a CLI and an MCP server, and is the recommended search backend for an LLM Wiki once it outgrows index-file lookups.
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://github.com/Ar9av/obsidian-wiki/blob/main/README.md"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T10:16:21Z
-base_confidence: 0.45
+updated: 2026-06-06T13:29:22Z
+base_confidence: 0.55
 lifecycle: draft
 lifecycle_changed: 2026-06-06
 tier: peripheral
@@ -61,10 +62,37 @@ This vault's skills (`wiki-query`, `wiki-ingest`, `wiki-status`) consult `qmd` w
 - When grep starts producing too many false positives
 - If you want semantic discovery (finding "RNN gradient issues" when the page says "vanishing gradients in recurrent nets")
 
-The `wiki-setup` skill includes optional QMD configuration; see `.env.example` (when present) for installation instructions.
+## Setup (per the framework's README)
+
+```bash
+# 1. Install QMD. For MCP mode, also add it to your MCP config.
+# 2. Index your wiki and/or source documents:
+qmd index --name wiki   /path/to/your/vault
+qmd index --name papers /path/to/your/sources
+
+# 3. Set the collection names + transport in .env:
+#    QMD_WIKI_COLLECTION=wiki        # used by wiki-query
+#    QMD_PAPERS_COLLECTION=papers    # used by wiki-ingest (source discovery)
+#    QMD_TRANSPORT=mcp               # mcp | cli
+#    QMD_CLI_SEARCH_MODE=quality     # quality | balanced | fast
+```
+
+`QMD_TRANSPORT=mcp` uses an agent-configured MCP server. `QMD_TRANSPORT=cli` runs the local `qmd` command directly. ^[extracted]
+
+## What changes with QMD enabled
+
+- **`wiki-query`** runs a semantic pass (lex+vec) against your wiki collection before falling back to Grep. Finds conceptually related pages even when the exact terms don't match. ^[extracted]
+- **`wiki-ingest`** queries your papers collection before writing a new page — surfaces related sources, spots contradictions, and decides whether to create a new page or merge into an existing one. ^[extracted]
+
+Both skills degrade gracefully: if `QMD_WIKI_COLLECTION` / `QMD_PAPERS_COLLECTION` are not set, they skip the QMD step silently and use Grep instead. ^[extracted]
+
+## Status in MeteorDreamWiki
+
+The current `.env` leaves QMD unset — qmd is dormant. With only ~16 pages in the vault, the index file is plenty and grep handles the rest. Worth revisiting around the 200–500 page mark.
 
 ## See also
 
 - [[concepts/llm-wiki-pattern]]
 - [[entities/obsidian]]
+- [[entities/obsidian-wiki-framework]]
 - [[concepts/rag-vs-llm-wiki]] — qmd applies RAG techniques *to the wiki*, which is itself RAG-resistant

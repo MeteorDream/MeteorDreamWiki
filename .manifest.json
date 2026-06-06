@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-06-06T13:09:10Z",
+  "last_updated": "2026-06-06T13:29:22Z",
   "sources": {
     "_raw/llm/knowledge/karpathy_llm_wiki.md": {
       "ingested_at": "2026-06-06T10:16:21Z",
@@ -59,16 +59,49 @@
         "README-zh.md"
       ],
       "note": "Promoted from _staging/ on 2026-06-06T12:53:59Z via /wiki-stage-commit. README files were written directly at ingest time."
+    },
+    "_raw/obsidian-wiki.md": {
+      "ingested_at": "2026-06-06T13:29:22Z",
+      "size_bytes": 32188,
+      "modified_at": "2026-06-06T12:38:05Z",
+      "content_hash": "sha256:10459667a64b395e548a17baca6ab22a1efce871e7f127108e7584fb7b439b3f",
+      "source_type": "document",
+      "project": null,
+      "pages_created": [
+        "references/obsidian-wiki-readme.md",
+        "entities/kepano-obsidian-skills.md",
+        "skills/agent-bootstrap-discovery.md"
+      ],
+      "pages_updated": [
+        "entities/obsidian-wiki-framework.md",
+        "skills/wiki-operations-trinity.md",
+        "concepts/persistent-knowledge-graph.md",
+        "entities/qmd.md",
+        "concepts/llm-wiki-pattern.md",
+        "index.md",
+        "log.md",
+        "hot.md"
+      ],
+      "raw_origin": true,
+      "original_raw_path": "_raw/obsidian-wiki.md",
+      "archived_path": "source/llm/frameworks/obsidian-wiki-readme.md",
+      "archived_at": "2026-06-06T13:29:22Z",
+      "renamed_during_archive": true,
+      "archived_filename": "obsidian-wiki-readme.md",
+      "archived_content_hash": "sha256:9cd1425f3cc5c0fa5afe6f5b882b3b5838b8e1509583456cafa349116edb483f",
+      "archived_body_size_bytes": 32189,
+      "note": "First ingest under archive-don't-delete. Filename was disambiguated from `obsidian-wiki.md` to `obsidian-wiki-readme.md` to avoid collision with the framework's repo name. Body has +1 leading newline byte due to HEREDOC concatenation when frontmatter was prepended; otherwise byte-identical to original. content_hash matches the original (skip-detection); archived_content_hash matches what's actually on disk."
     }
   },
   "projects": {},
   "stats": {
-    "total_sources_ingested": 2,
-    "total_pages": 13,
+    "total_sources_ingested": 3,
+    "total_pages": 16,
     "total_pages_staged": 0,
     "total_patches_staged": 0,
     "total_projects": 0,
     "last_full_rebuild": null,
-    "last_stage_commit": "2026-06-06T12:53:59Z"
+    "last_stage_commit": "2026-06-06T12:53:59Z",
+    "last_ingest": "2026-06-06T13:29:22Z"
   }
 }

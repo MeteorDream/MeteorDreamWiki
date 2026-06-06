@@ -9,8 +9,9 @@ tags:
 summary: A property of LLM-maintained wikis — the resulting collection of interlinked markdown pages forms a graph that gets denser, more cross-referenced, and more synthesis-rich with every ingested source.
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://github.com/Ar9av/obsidian-wiki/blob/main/README.md"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T10:16:21Z
+updated: 2026-06-06T13:29:22Z
 base_confidence: 0.55
 lifecycle: draft
 lifecycle_changed: 2026-06-06
@@ -63,9 +64,21 @@ A graph database would also work, but markdown + `[[wikilinks]]` has compounding
 
 Trading "structured queries" for "everything else" turns out to be the right call at the scale of a personal wiki (hundreds to a few thousand pages). ^[inferred]
 
+## Surfacing the graph
+
+Once you have a persistent graph, the next question is how to *see* it. The [[entities/obsidian-wiki-framework]] ships two skills for this:
+
+- **`/graph-colorize`** rewrites `<vault>/.obsidian/graph.json` so Obsidian's built-in graph view tints nodes by tag, folder, or visibility. Modes include `by-tag` (top 10 tags), `by-category` (the seven vault folders), `by-visibility` (highlight `visibility/pii` / `visibility/internal`), `combined`, and `custom`. ^[extracted]
+- **`/wiki-export`** turns the wikilink graph into `graph.json` (queryable), `graph.graphml` (Gephi/yEd), `cypher.txt` (Neo4j), and a self-contained interactive `graph.html` — no server required. ^[extracted]
+
+`/wiki-status --insights` analyzes the *shape*: top hubs, bridge pages (whose removal would partition the graph), tag-cluster cohesion, surprising connections, graph delta since last run. The output goes to `_insights.md`. ^[extracted]
+
+Together: the graph isn't just stored, it's queryable, exportable, and structurally analyzable. ^[inferred]
+
 ## See also
 
 - [[concepts/llm-wiki-pattern]]
 - [[concepts/three-layer-architecture]]
 - [[entities/obsidian]]
+- [[entities/obsidian-wiki-framework]] — the framework that ships the visualization skills
 - [[skills/index-and-log-files]]

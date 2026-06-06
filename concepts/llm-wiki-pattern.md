@@ -11,8 +11,9 @@ summary: A pattern where an LLM incrementally builds and maintains a persistent,
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
   - "https://github.com/Ar9av/obsidian-wiki"
+  - "https://github.com/Ar9av/obsidian-wiki/blob/main/README.md"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T12:44:17Z
+updated: 2026-06-06T13:29:22Z
 base_confidence: 0.65
 lifecycle: draft
 lifecycle_changed: 2026-06-06

@@ -10,8 +10,9 @@ summary: The three operational primitives that keep an LLM-maintained wiki worki
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
   - "https://github.com/Ar9av/obsidian-wiki"
+  - "https://github.com/Ar9av/obsidian-wiki/blob/main/README.md"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T12:44:17Z
+updated: 2026-06-06T13:29:22Z
 base_confidence: 0.7
 lifecycle: stable
 lifecycle_changed: 2026-06-06
@@ -96,6 +97,21 @@ This is what makes exploration compound — not just ingestion. This vault provi
 - `wiki-context-pack` — token-bounded context slice for downstream tasks
 - `wiki-research` — multi-round web search filed back into the vault
 - `memory-bridge` — diff knowledge across AI tools
+
+### Tiered retrieval (per the framework's README)
+
+`wiki-query` reads titles, tags, and page summaries first and only opens page bodies when the cheap pass can't answer. Saying "quick answer" or "just scan" forces index-only mode. **This keeps query cost roughly flat as your vault grows from 20 pages to 2000.** ^[extracted]
+
+The `summary:` frontmatter field on every page is what makes this work — the cheap path reads summaries, not bodies. A missing or stale summary forces an expensive full-page read. ^[extracted]
+
+### Two skills work cross-project
+
+`/wiki-update` and `/wiki-query` are portable: they work from inside the vault and from any other project (via global symlinks into `~/<agent>/skills/`). See [[skills/agent-bootstrap-discovery]] for how that's wired.
+
+- `/wiki-update` — *push.* Distill the current project's learnings into the vault. On reruns, it diffs against `git log` and only processes the delta. ^[extracted]
+- `/wiki-query` — *pull.* Ask the vault a question from any project. ^[extracted]
+
+This is the bridge between the project layer and the wiki layer — the only two skills that explicitly cross that boundary. ^[inferred]
 
 ## 3. Lint
 

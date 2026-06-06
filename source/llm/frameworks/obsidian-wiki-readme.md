@@ -1,3 +1,34 @@
+---
+title: obsidian-wiki — README
+source_url: https://github.com/Ar9av/obsidian-wiki/blob/main/README.md
+source_repo: https://github.com/Ar9av/obsidian-wiki
+source_author: "@_ar9av (https://x.com/_ar9av)"
+source_kind: readme
+source_format: markdown
+license: "unknown — repository license not stated in this file"
+archived_at: 2026-06-06T13:29:22Z
+archived_by: "wiki-ingest (raw mode promotion)"
+original_raw_path: _raw/obsidian-wiki.md
+original_filename: obsidian-wiki.md
+renamed_to: obsidian-wiki-readme.md
+rename_reason: "disambiguates from the framework's own repo name; aligns with references/obsidian-wiki-readme.md wiki page"
+size_bytes: 32188
+content_hash: "sha256:10459667a64b395e548a17baca6ab22a1efce871e7f127108e7584fb7b439b3f"
+content_hash_note: "Hash of the ORIGINAL _raw/ file at ingest time (matches .manifest.json). The body below differs by 1 leading newline byte due to HEREDOC concatenation when frontmatter was prepended; content is otherwise byte-identical. Use content_hash for ingest skip-detection; for byte-level verification of the as-archived body, see archived_content_hash."
+archived_content_hash: "sha256:9cd1425f3cc5c0fa5afe6f5b882b3b5838b8e1509583456cafa349116edb483f"
+archived_body_size_bytes: 32189
+ingested_into:
+  - entities/obsidian-wiki-framework.md
+  - references/obsidian-wiki-readme.md
+  - entities/kepano-obsidian-skills.md
+  - skills/agent-bootstrap-discovery.md
+  - skills/wiki-operations-trinity.md
+  - concepts/persistent-knowledge-graph.md
+  - entities/qmd.md
+  - concepts/llm-wiki-pattern.md
+notes: "First multi-page ingest under the new archive-don't-delete rule (introduced 2026-06-06T13:09Z). Second source ever ingested into MeteorDreamWiki; the first was source/llm/knowledge/karpathy_llm_wiki.md."
+---
+
 # obsidian-wiki
 
 
