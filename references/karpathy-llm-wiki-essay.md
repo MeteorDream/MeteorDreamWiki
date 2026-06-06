@@ -68,7 +68,7 @@ This vault is one such instantiation.
 
 ## Local provenance
 
-Originally staged at `_raw/llm/knowledge/karpathy_llm_wiki.md` and promoted into this wiki on 2026-06-06 by `/wiki-ingest` (raw mode). The `_raw/` file was deleted after promotion per the skill's deletion-safety rule.
+Originally staged at `_raw/llm/knowledge/karpathy_llm_wiki.md` and promoted into this wiki on 2026-06-06 by `/wiki-ingest` (raw mode). Following the **archive-don't-delete** rule introduced 2026-06-06T13:09Z, the original was archived to `source/llm/knowledge/karpathy_llm_wiki.md` (with archive frontmatter recording storage time, source URL, content hash, and the wiki pages it produced) instead of being deleted. Open that file to see the original essay verbatim plus its provenance metadata.
 
 ## See also
 

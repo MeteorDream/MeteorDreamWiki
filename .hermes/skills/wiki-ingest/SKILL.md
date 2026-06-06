@@ -62,7 +62,7 @@ Process draft pages from the `_raw/` staging directory inside the vault. Use whe
 - The user says "process my drafts", "promote my raw pages", or drops files into `_raw/`
 - After a paste-heavy session where notes were captured quickly without structure
 
-In raw mode, each file in `OBSIDIAN_VAULT_PATH/_raw/` (or `OBSIDIAN_RAW_DIR`) is treated as a source. After promoting a file to a proper wiki page, **delete the original from `_raw/`**. Never leave promoted files in `_raw/` — they'll be double-processed on the next run.
+In raw mode, each file in `OBSIDIAN_VAULT_PATH/_raw/` (or `OBSIDIAN_RAW_DIR`) is treated as a source. After promoting a file to a proper wiki page, **archive the original to `source/` — never delete it.** Files stay in the vault as the permanent provenance anchor; only the `_raw/` location is transient.
 
 **Source inheritance:** The `_raw/` path is a staging artifact — never use it as the `sources:` value on the promoted page. Derive the source entry from the `_raw/` file's own frontmatter instead:
 
@@ -71,7 +71,62 @@ In raw mode, each file in `OBSIDIAN_VAULT_PATH/_raw/` (or `OBSIDIAN_RAW_DIR`) is
 - If the file has only `sources:`, copy those entries verbatim.
 - Only fall back to the `_raw/` filename if the file has no `sources:` or `capture_source` fields at all.
 
-**Deletion safety:** Only delete the specific file that was just promoted. Before deleting, verify the resolved path is inside `$OBSIDIAN_VAULT_PATH/_raw/` — never delete files outside this directory. Never use wildcards or recursive deletion (`rm -rf`, `rm *`). Delete one file at a time by its exact path.
+**Archive rules (replaces the previous "delete after promotion" rule):**
+
+After successful promotion, the original raw file MUST be moved from `_raw/` into `source/<topic-path>/<filename>` rather than deleted. The vault keeps the source forever; the wiki layer is the *derived* layer over it.
+
+1. **Pick the topic path under `source/`.** Mirror the topic the source is about, not the wiki category it ended up in. Reasonable buckets:
+   - `source/llm/knowledge/`, `source/llm/papers/` — LLMs, RAG, agents, papers about same
+   - `source/web-clippings/<domain>/` — Obsidian Web Clipper output, grouped by host
+   - `source/transcripts/<agent>/` — Claude/Codex/Hermes/Pi/etc. session exports
+   - `source/research/<topic>/` — research papers, reports, articles
+   - `source/personal/<theme>/` — journal-style inputs
+   - `source/<project-name>/` when the file belongs to a specific project
+   - When in doubt, **prefer the existing path the file came in on** (e.g. `_raw/llm/knowledge/foo.md` → `source/llm/knowledge/foo.md`).
+2. **`mkdir -p` the target directory.** Use the exact same filename as the original; do not rename.
+3. **For markdown sources (`.md`, `.markdown`, `.txt` written as markdown):** prepend an archive frontmatter block to the file body BEFORE moving. If the file already has frontmatter, merge: keep all existing keys; add the archive keys (listed below) without colliding. The body stays untouched.
+4. **For non-markdown sources (PDF, image, audio, binary, etc.):** the original file is moved as-is. Write a sidecar metadata file at `source/<topic-path>/<filename>.meta.yaml` containing the same archive keys. The sidecar is plain YAML (no leading `---`).
+5. **Move, don't copy.** After the file is at its `source/` location with metadata, remove the original `_raw/` path. Verify the canonical resolved path is inside `$OBSIDIAN_VAULT_PATH/_raw/` before removing — never operate on files outside the vault. Never use wildcards or recursive deletion.
+6. **Update the manifest.** The source's manifest entry should record both `archived_at` and `archived_path` (the new location under `source/`). Subsequent ingest runs use the manifest's `content_hash` to skip the file regardless of where it lives.
+7. **If the move fails** (permission, disk full, target collision): leave the file in `_raw/`, report the failure, and abort that file's promotion. Do not delete the `_raw/` original until the archive copy is in place. **Never lose data.**
+
+#### Archive metadata schema (frontmatter for `.md`, sidecar `.meta.yaml` for binaries)
+
+```yaml
+title: <human title — for .md files, copy from existing frontmatter or first H1; for binaries, use the filename stem>
+source_url: <URL if known, else null>
+source_author: <author name if known, else null>
+source_kind: <essay | paper | article | transcript | book-chapter | screenshot | diagram | data | other>
+source_format: <markdown | pdf | image-png | image-jpg | audio-mp3 | text | …>
+license: <short note on license/usage if known, else "unknown">
+archived_at: <ISO 8601 timestamp at the moment of archival>
+archived_by: "wiki-ingest (raw mode promotion)"   # or "wiki-ingest (direct ingest)"
+original_raw_path: <_raw/... path the file came from, or "(not from _raw)" for direct ingests>
+size_bytes: <integer size of the body — for .md, the body before adding archive frontmatter>
+content_hash: "sha256:<64-hex>"   # hash of the original body content, matches manifest
+ingested_into:                     # the wiki pages this source produced
+  - <category>/<page>.md
+  - …
+notes: <optional free-text notes from the ingest, useful for future re-reads>
+```
+
+For non-markdown sources, also add:
+
+```yaml
+archived_path: source/<topic-path>/<filename>
+sidecar: true
+```
+
+For markdown sources whose archived body diverges by trailing-newline normalization (a few bytes), add:
+
+```yaml
+content_hash_note: <short note explaining the divergence>
+archived_content_hash: "sha256:<hash of the as-archived body>"
+```
+
+so `content_hash` always matches the original (manifest-relevant), while `archived_content_hash` reflects what's actually on disk now.
+
+**Direct ingests (sources from `OBSIDIAN_SOURCES_DIR` outside `_raw/`):** files outside the vault are NOT moved — leave them where the user keeps them. Only `_raw/` files are archived. Record `original_raw_path: "(not from _raw)"` and `archived_path: <original absolute path>` in the manifest if you want to track external sources.
 
 ## The Ingest Process
 
@@ -302,10 +357,15 @@ After writing pages, check that wikilinks work in both directions. If page A lin
   "source_type": "document",  // or "image" for png/jpg/webp/gif and image-only PDFs
   "project": "project-name-or-null",
   "pages_created": ["list/of/pages.md"],
-  "pages_updated": ["list/of/pages.md"]
+  "pages_updated": ["list/of/pages.md"],
+  "original_raw_path": "_raw/<topic>/<file>",  // present only when source came from _raw/
+  "archived_path": "source/<topic>/<file>",   // present after archive step succeeds
+  "archived_at": "TIMESTAMP"                  // present after archive step succeeds
 }
 ```
-`content_hash` is the SHA-256 of the file contents at ingest time. Always write it — it's the primary skip signal on subsequent runs.
+`content_hash` is the SHA-256 of the original body content at ingest time. Always write it — it's the primary skip signal on subsequent runs (works whether the file ends up in `_raw/`, `source/`, or somewhere outside the vault).
+
+`archived_path` and `archived_at` are required when the source came from `_raw/` and the archive step completed. If archival failed, leave them out and re-attempt the move on a later run.
 
 Also update `stats.total_sources_ingested` and `stats.total_pages`.
 
@@ -388,6 +448,9 @@ After ingesting, verify:
 - [ ] Inferred and ambiguous claims are marked with `^[inferred]` / `^[ambiguous]`; `provenance:` frontmatter block is present on new and updated pages
 - [ ] Every new/updated page has a `summary:` frontmatter field (1–2 sentences, ≤200 chars)
 - [ ] `relationships:` block is present on pages where source text made typed connections clear; all entries use an allowed type from `llm-wiki/SKILL.md`
+- [ ] **In raw mode:** every promoted `_raw/` file has been moved to `source/<topic>/` (NOT deleted), with archive frontmatter (for `.md`) or `.meta.yaml` sidecar (for binaries)
+- [ ] **In raw mode:** the manifest entry records `original_raw_path`, `archived_path`, and `archived_at`
+- [ ] **In raw mode:** `_raw/` no longer contains the promoted file; empty parent directories under `_raw/` have been cleaned up
 - [ ] If `QMD_WIKI_COLLECTION` is set and the QMD CLI is available, `qmd update` has run after writing pages
 - [ ] If QMD reports missing vectors or embeddings may be stale, `qmd embed` has run
 - [ ] QMD refresh status is included in the final report

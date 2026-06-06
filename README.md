@@ -39,9 +39,11 @@ The LLM Wiki pattern moves the synthesis *upstream* of the query. The LLM **incr
 
 | Layer | Owner | What it is | In this vault |
 |---|---|---|---|
-| **Raw sources** | You | Articles, papers, agent transcripts, web clippings — immutable, the source of truth | `_raw/`, `~/.claude`, `~/.codex`, `~/.hermes`, plus anything you add to `OBSIDIAN_SOURCES_DIR` |
+| **Raw sources** | You | Articles, papers, agent transcripts, web clippings — immutable, the source of truth | `source/` (archived inputs), `_raw/` (transient inbox), `~/.claude`, `~/.codex`, `~/.hermes`, plus anything you add to `OBSIDIAN_SOURCES_DIR` |
 | **The wiki** | The LLM | Distilled, interlinked markdown pages with frontmatter, wikilinks, and a maintained graph | `concepts/`, `entities/`, `skills/`, `references/`, `synthesis/`, `journal/`, `projects/` |
 | **The schema** | Co-evolved by you and the LLM | The conventions that turn the LLM into a disciplined wiki maintainer rather than a generic chatbot | `.claude/skills/`, `.hermes/skills/`, frontmatter rules, tag taxonomy, `.env` |
+
+> **Why `source/` and `_raw/` are split.** `_raw/` is the *inbox* where new files arrive; `source/` is the *archive* where they live forever after ingestion. The split lets `wiki-ingest` keep one rule simple ("everything in `_raw/` is unprocessed") while preserving every byte of provenance in `source/<topic>/`. You can grep, re-read, or re-ingest archived sources at any time — the vault never silently throws data away.
 
 ### The three operations
 
@@ -92,9 +94,10 @@ The pattern echoes Vannevar Bush's 1945 [Memex](https://en.wikipedia.org/wiki/Me
 | `synthesis/` | Cross-cutting pages that connect multiple concepts |
 | `journal/` | Time-anchored notes |
 | `projects/` | Per-project knowledge (populated during ingest) |
-| `_raw/` | Drop new sources here; `wiki-ingest` promotes them and deletes the originals |
+| `source/` | **Permanent archive of every raw input ever ingested**, organized by topic (e.g. `source/llm/knowledge/`, `source/web-clippings/<host>/`, `source/transcripts/<agent>/`). Markdown sources gain archive frontmatter (storage time, source URL, content hash, which wiki pages they produced); binaries get a `.meta.yaml` sidecar. Read-only history. |
+| `_raw/` | Drop new sources here; `wiki-ingest` promotes them and **archives the originals to `source/`** (never deletes) |
 | `_staging/` | Review queue when `WIKI_STAGED_WRITES=true` |
-| `_archives/` | Snapshots from rebuild/restore operations |
+| `_archives/` | Snapshots from rebuild/restore operations *(distinct from `source/` — wiki snapshots vs. raw inputs)* |
 | `index.md` | Auto-maintained catalog of every wiki page |
 | `log.md` | Append-only chronological record |
 | `hot.md` | ~500-word semantic snapshot of recent activity |
@@ -269,7 +272,7 @@ Together they let you treat the vault as a long-term memory store that you can r
 - **Frontmatter is required.** Every page has `title`, `tags`, `summary`, `sources`, `base_confidence`, `lifecycle`, `tier`, `provenance`. See `tag-taxonomy`.
 - **Wikilinks over plain prose.** `[[Concept Name]]` is what builds the graph.
 - **Provenance markers per claim.** `^[extracted]` (stated by source), `^[inferred]` (synthesized), `^[ambiguous]` (sources disagree). The wiki's value depends on the user being able to tell signal from synthesis.
-- **`_raw/` is disposable.** `wiki-ingest` promotes drafts and deletes the originals on success.
+- **`_raw/` is a transient inbox; `source/` is permanent.** `wiki-ingest` reads from `_raw/`, distills into wiki pages, then **moves the original to `source/<topic>/`** (with archive frontmatter for `.md` files, sidecar `.meta.yaml` for binaries) — never deletes. The provenance anchor stays in the vault forever.
 - **`hot.md` is rewritten frequently.** Don't hand-edit; let the skills maintain it.
 - **The wiki is a git repo.** You get version history, branching, and collaboration for free.
 

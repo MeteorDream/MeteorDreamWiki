@@ -49,13 +49,14 @@ If `.env` doesn't exist, create it from `.env.example`. Ask the user for:
 ## Step 2: Create Vault Directory Structure
 
 ```bash
-mkdir -p "$OBSIDIAN_VAULT_PATH"/{concepts,entities,skills,references,synthesis,journal,projects,_archives,_raw,_staging,.obsidian}
+mkdir -p "$OBSIDIAN_VAULT_PATH"/{concepts,entities,skills,references,synthesis,journal,projects,source,_archives,_raw,_staging,.obsidian}
 ```
 
 - `.obsidian/` — Obsidian's own config. Creates vault recognition.
 - `projects/` — Per-project knowledge (populated during ingest).
-- `_archives/` — Stores wiki snapshots for rebuild/restore operations.
-- `_raw/` — Staging area for unprocessed drafts. Drop rough notes here; `wiki-ingest` will promote them to proper wiki pages and delete the originals.
+- `source/` — **Permanent archive of every raw input ever ingested**, organized by topic (e.g. `source/llm/knowledge/karpathy_llm_wiki.md`, `source/web-clippings/wikipedia.org/`, `source/transcripts/claude/`). Files arrive here from `_raw/` after `wiki-ingest` promotes them; markdown sources gain an archive frontmatter block (storage time, source URL, content hash, which wiki pages they produced); binaries get a `.meta.yaml` sidecar. **Treat this directory as read-only history** — the wiki layer is the live derived layer, not this one.
+- `_archives/` — Stores wiki snapshots for rebuild/restore operations. (Distinct from `source/`, which holds raw inputs; `_archives/` holds wiki snapshots.)
+- `_raw/` — Staging area for unprocessed drafts. Drop rough notes here; `wiki-ingest` will promote them to proper wiki pages and **archive the originals to `source/`** (never deletes).
 - `_staging/` — Review queue for LLM-written pages when `WIKI_STAGED_WRITES=true`. Pages here are not visible in Obsidian's graph until promoted via `/wiki-stage-commit`.
 
 ## Step 3: Create Special Files
@@ -160,14 +161,15 @@ Tell the user about these recommended community plugins (they install manually):
 ## Step 6: Verify Setup
 
 Run a quick sanity check:
-- [ ] Vault directory exists with: `concepts/`, `entities/`, `skills/`, `references/`, `synthesis/`, `journal/`, `projects/`, `_archives/`, `_raw/`
+- [ ] Vault directory exists with: `concepts/`, `entities/`, `skills/`, `references/`, `synthesis/`, `journal/`, `projects/`, `source/`, `_archives/`, `_raw/`
 - [ ] `index.md` exists at vault root
 - [ ] `log.md` exists at vault root
 - [ ] `hot.md` exists at vault root
 - [ ] `.env` has `OBSIDIAN_VAULT_PATH` set
 - [ ] `.obsidian/` directory exists
 - [ ] `_staging/` directory exists (required even when `WIKI_STAGED_WRITES` is not set — created on setup for future use)
-- [ ] Source directories (if configured) exist and are readable
+- [ ] `source/` directory exists (always created, even when empty — it's the destination for archived raw inputs)
+- [ ] Source directories (if configured via `OBSIDIAN_SOURCES_DIR`) exist and are readable
 
 Report the results and tell the user they can now:
 1. Open the vault in Obsidian (File → Open Vault → select the directory)
