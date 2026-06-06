@@ -10,15 +10,16 @@ tags:
 summary: A pattern where an LLM incrementally builds and maintains a persistent, interlinked markdown wiki between the user and raw sources — knowledge is compiled once, then kept current, instead of re-derived on every query.
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://github.com/Ar9av/obsidian-wiki"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T10:16:21Z
+updated: 2026-06-06T12:44:17Z
 base_confidence: 0.65
 lifecycle: draft
 lifecycle_changed: 2026-06-06
 tier: core
 provenance:
-  extracted: 0.85
-  inferred: 0.10
+  extracted: 0.83
+  inferred: 0.12
   ambiguous: 0.05
 relationships:
   - target: "[[concepts/three-layer-architecture]]"
@@ -29,6 +30,8 @@ relationships:
     type: derived_from
   - target: "[[entities/andrej-karpathy]]"
     type: related_to
+  - target: "[[entities/obsidian-wiki-framework]]"
+    type: implements
 ---
 
 # LLM Wiki Pattern
@@ -78,12 +81,17 @@ LLMs don't get bored, don't forget cross-references, and can touch 15 files in o
 
 This wiki is itself an instance of the pattern.
 
+### How it's implemented in practice
+
+The pattern is implemented in this vault by the [[entities/obsidian-wiki-framework|`Ar9av/obsidian-wiki`]] framework. That framework decomposes the "Ingest" primitive into four explicit stages — *Ingest → Pull Information → Merge → Schema* — and uses a `.manifest.json` ledger to make subsequent ingests delta-only. This is one concrete realization of the pattern; others are possible. ^[inferred]
+
 ## See also
 
 - [[concepts/three-layer-architecture]] — raw sources / wiki / schema
 - [[concepts/rag-vs-llm-wiki]] — the contrast that motivates the pattern
 - [[concepts/persistent-knowledge-graph]] — the graph property the pattern produces
 - [[skills/wiki-operations-trinity]] — Ingest / Query / Lint as the operational primitives
+- [[entities/obsidian-wiki-framework]] — the agent-agnostic framework that implements this pattern (the upstream of this vault)
 - [[references/karpathy-llm-wiki-essay]] — the source essay
 - [[entities/andrej-karpathy]] — author of the pattern
 - [[references/memex]] — Vannevar Bush's 1945 vision, the spiritual predecessor

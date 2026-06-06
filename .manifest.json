@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-06-06T10:16:21Z",
+  "last_updated": "2026-06-06T12:53:59Z",
   "sources": {
     "_raw/llm/knowledge/karpathy_llm_wiki.md": {
       "ingested_at": "2026-06-06T10:16:21Z",
@@ -30,13 +30,42 @@
       "raw_origin": true,
       "promoted_from": "_raw/llm/knowledge/karpathy_llm_wiki.md",
       "deleted_after_promotion": true
+    },
+    "https://github.com/Ar9av/obsidian-wiki": {
+      "ingested_at": "2026-06-06T12:44:17Z",
+      "promoted_at": "2026-06-06T12:53:59Z",
+      "size_bytes": null,
+      "modified_at": null,
+      "content_hash": null,
+      "source_type": "url",
+      "project": null,
+      "staged": false,
+      "pages_created": [
+        "entities/obsidian-wiki-framework.md"
+      ],
+      "pages_updated": [
+        "concepts/llm-wiki-pattern.md",
+        "skills/wiki-operations-trinity.md",
+        "entities/obsidian.md",
+        "index.md",
+        "log.md",
+        "hot.md"
+      ],
+      "project_files_updated": [
+        "README.md",
+        "README-zh.md"
+      ],
+      "note": "Promoted from _staging/ on 2026-06-06T12:53:59Z via /wiki-stage-commit. README files were written directly at ingest time."
     }
   },
   "projects": {},
   "stats": {
-    "total_sources_ingested": 1,
-    "total_pages": 12,
+    "total_sources_ingested": 2,
+    "total_pages": 13,
+    "total_pages_staged": 0,
+    "total_patches_staged": 0,
     "total_projects": 0,
-    "last_full_rebuild": null
+    "last_full_rebuild": null,
+    "last_stage_commit": "2026-06-06T12:53:59Z"
   }
 }

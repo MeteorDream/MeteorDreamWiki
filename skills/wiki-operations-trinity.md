@@ -9,8 +9,9 @@ tags:
 summary: The three operational primitives that keep an LLM-maintained wiki working — Ingest (add and integrate sources), Query (answer questions and file the answers back), and Lint (health-check structure and contradictions).
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://github.com/Ar9av/obsidian-wiki"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T10:16:21Z
+updated: 2026-06-06T12:44:17Z
 base_confidence: 0.7
 lifecycle: stable
 lifecycle_changed: 2026-06-06
@@ -24,6 +25,8 @@ relationships:
     type: implements
   - target: "[[concepts/persistent-knowledge-graph]]"
     type: uses
+  - target: "[[entities/obsidian-wiki-framework]]"
+    type: implements
 ---
 
 # Wiki Operations Trinity
@@ -44,6 +47,17 @@ What the LLM does:
 6. Appends an entry to the log
 
 > A single source might touch 10-15 wiki pages. ^[extracted]
+
+### Four stages inside Ingest (per the upstream framework)
+
+The [[entities/obsidian-wiki-framework|`Ar9av/obsidian-wiki`]] framework documents Ingest as a four-stage pipeline — useful when debugging an ingest gone wrong or writing your own:
+
+1. **Ingest** — read source material directly (markdown, PDFs, chat exports, images)
+2. **Pull Information** — extract concepts, entities, claims, relationships
+3. **Merge** — integrate new knowledge into existing pages; never replace
+4. **Schema** — keep frontmatter, tag taxonomy, and relationship types coherent
+
+The first step is data IO. The middle two are the cognitive work. The last one is what prevents the graph from drifting as it grows. ^[inferred]
 
 This vault implements ingest as several skills:
 
@@ -124,3 +138,5 @@ The trinity is interdependent. Skipping one collapses the pattern back into some
 - [[concepts/llm-wiki-pattern]]
 - [[concepts/three-layer-architecture]]
 - [[skills/index-and-log-files]]
+- [[entities/obsidian-wiki-framework]] — the framework that ships these skills
+- [[entities/obsidian-wiki-framework]] — the framework that ships these skills

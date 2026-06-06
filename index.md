@@ -4,7 +4,7 @@ title: Wiki Index
 
 # Wiki Index
 
-*This index is automatically maintained. Last updated: 2026-06-06T10:16:21Z*
+*This index is automatically maintained. Last updated: 2026-06-06T12:53:59Z*
 
 ## Concepts
 
@@ -18,6 +18,7 @@ title: Wiki Index
 - [[entities/andrej-karpathy]] — AI researcher; articulated the LLM Wiki pattern.
 - [[entities/vannevar-bush]] — Author of the 1945 Memex essay; the historical antecedent.
 - [[entities/obsidian]] — Local-first markdown editor with wikilinks and graph view; the vault's viewer.
+- [[entities/obsidian-wiki-framework]] — The agent-agnostic framework that ships the skills powering this vault.
 - [[entities/qmd]] — Local hybrid BM25/vector search engine for markdown; optional search backend.
 
 ## Skills

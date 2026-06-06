@@ -9,8 +9,9 @@ tags:
 summary: A local-first markdown editor with wikilinks, graph view, and a plugin ecosystem — the canonical viewer/editor for an LLM-maintained wiki and the tool this vault is configured for.
 sources:
   - "agent:wiki-ingest karpathy_llm_wiki.md (raw)"
+  - "https://github.com/Ar9av/obsidian-wiki"
 created: 2026-06-06T10:16:21Z
-updated: 2026-06-06T10:16:21Z
+updated: 2026-06-06T12:44:17Z
 base_confidence: 0.55
 lifecycle: draft
 lifecycle_changed: 2026-06-06
@@ -24,6 +25,8 @@ relationships:
     type: uses
   - target: "[[concepts/persistent-knowledge-graph]]"
     type: implements
+  - target: "[[entities/obsidian-wiki-framework]]"
+    type: related_to
 ---
 
 # Obsidian
@@ -66,9 +69,16 @@ The vault is just a directory. No vendor lock-in, no cloud sync required, no pro
 - Search with grep, [[entities/qmd]], or any other tool
 - Move to a different editor without converting anything
 
+## How agents drive it
+
+In the [[concepts/llm-wiki-pattern|LLM Wiki pattern]], Obsidian is the *viewer* — but the actual editing is done by agents through frameworks like [[entities/obsidian-wiki-framework|`Ar9av/obsidian-wiki`]]. The pattern works because Obsidian's vault format is plain markdown plus `.obsidian/` config: agents can write the `.md` files directly, and Obsidian picks them up live without any plugin or API. ^[inferred]
+
+That's the whole reason Obsidian fits — it is, structurally, a viewer over a directory of markdown files. The agent doesn't need Obsidian's API; it just needs a filesystem. ^[inferred]
+
 ## See also
 
 - [[concepts/llm-wiki-pattern]]
 - [[concepts/persistent-knowledge-graph]]
 - [[entities/qmd]]
+- [[entities/obsidian-wiki-framework]] — the framework that drives this vault
 - [[skills/index-and-log-files]]

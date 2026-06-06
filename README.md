@@ -8,6 +8,8 @@ The repository root *is* the vault. Open this folder in Obsidian and you're done
 
 This project is an instantiation of [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). The pattern's founding essay has been ingested into this vault — see [[concepts/llm-wiki-pattern]] and [[references/karpathy-llm-wiki-essay]].
 
+> **About the upstream framework.** The skills under `.claude/skills/`, `.hermes/skills/`, and `.agents/skills/` come from [`Ar9av/obsidian-wiki`](https://github.com/Ar9av/obsidian-wiki) — *"a framework enabling AI coding agents to build and maintain a personal knowledge management system using Obsidian as the viewer and LLMs as maintainers."* The framework is agent-agnostic: it ships skills for Claude Code, Cursor, Windsurf, Codex, Gemini CLI, Pi, Kiro, Hermes, OpenClaw, GitHub Copilot, and others. **MeteorDreamWiki** is one concrete vault built on top of it.
+
 ---
 
 ## The LLM Wiki methodology
@@ -48,6 +50,17 @@ These three primitives are all you really need. Every skill in this vault is a r
 1. **Ingest** — Drop a source into `_raw/` (or point `OBSIDIAN_SOURCES_DIR` at it). The LLM reads it, writes a summary, updates the index, refreshes 10–15 related pages, and appends a log entry. *A single source touches many pages — that's the whole point.*
 2. **Query** — Ask a question. The LLM reads the index, drills into relevant pages, and answers with citations. **Good answers can be filed back into the wiki as new pages**, so exploration also compounds — not just ingestion.
 3. **Lint** — Periodically health-check the wiki: contradictions between pages, stale claims that newer sources superseded, orphan pages with no inbound links, important concepts mentioned but lacking their own page, missing cross-references. The LLM is good at suggesting *new* questions and sources to fill gaps.
+
+#### How ingest actually works (four stages, per the upstream framework)
+
+The `wiki-ingest` skill decomposes Ingest into four explicit stages — this is the model the framework documents:
+
+1. **Ingest** — read source material directly. Markdown, PDFs, chat exports, images (vision-capable models only).
+2. **Pull Information** — extract concepts, entities, claims, and relationships. Tag each claim as *extracted* / *inferred* / *ambiguous* as it's pulled.
+3. **Merge** — integrate the new knowledge into existing pages, never replace. Update summaries, add wikilinks, record the source. A single ingest touches 10–15 pages.
+4. **Schema** — keep frontmatter, tag taxonomy, and relationship types coherent as the graph evolves. This is what prevents drift over hundreds of pages.
+
+A `.manifest.json` ledger tracks every source ever ingested (path, content hash, mtime, pages it produced) so subsequent runs only process what's actually new — that's **delta tracking**, and it's what makes append-mode ingest fast on a vault with thousands of sources.
 
 ### Two special files keep it navigable
 
@@ -96,6 +109,25 @@ The pattern echoes Vannevar Bush's 1945 [Memex](https://en.wikipedia.org/wiki/Me
 
 ## Getting started
 
+### 0. (Only if starting a fresh vault) Install the framework
+
+This repo is already wired up — skip to step 1. If you want to bootstrap a *new* vault from scratch, the upstream offers three installation paths:
+
+```bash
+# Option A — pip (recommended for end users)
+pip install obsidian-wiki
+obsidian-wiki setup --vault /path/to/vault
+
+# Option B — Skills CLI (drop skills into an existing project)
+npx skills add Ar9av/obsidian-wiki
+
+# Option C — Git clone (track upstream changes directly)
+git clone https://github.com/Ar9av/obsidian-wiki
+cd obsidian-wiki && bash setup.sh
+```
+
+After installation, run `/wiki-setup` inside your AI agent to scaffold the vault structure (categories, special files, `.env`).
+
 ### 1. Open the vault in Obsidian
 
 `File → Open Vault → ` *(this repository's root directory)*
@@ -143,6 +175,25 @@ To mine past AI conversations:
 /wiki-status --insights # hubs, bridges, fragmented tag clusters
 /daily-update          # cron-friendly daily refresh
 ```
+
+---
+
+## Agent compatibility
+
+The upstream framework ships skill bundles for many AI coding agents — they all read the same vault format. **MeteorDreamWiki currently has skill files committed for three of them** (`.claude/`, `.hermes/`, `.agents/`), but you can drop in any of the others as needed.
+
+| Agent | Skill discovery path | Status in this repo |
+|---|---|---|
+| Claude Code | `.claude/skills/` | ✅ committed |
+| Hermes | `.hermes/skills/` | ✅ committed |
+| Cursor / Windsurf / generic | `.agents/skills/` | ✅ committed |
+| Codex | `~/.codex` (history mining only) | history path configured |
+| GitHub Copilot CLI | `~/.copilot/` | use `/copilot-history-ingest` to mine |
+| Pi (OpenCode) | `~/.pi/agent/sessions/` | use `/pi-history-ingest` to mine |
+| OpenClaw | `~/.openclaw/` | use `/openclaw-history-ingest` to mine |
+| Gemini CLI / Kiro | per-agent paths | not yet wired in this vault |
+
+The vault content (every `.md` page, the index, the log, the manifest) is **plain markdown** — none of it is agent-specific. Switching agents only changes which skill files load.
 
 ---
 
@@ -200,6 +251,15 @@ The `.claude/skills/` folder bundles ~38 skills. Each one is a refinement of Ing
 - **`wiki-update`** — sync knowledge from any project into this vault
 
 Run `/<skill-name>` inside Claude Code to invoke any of these.
+
+### Two portable "global" skills
+
+Two skills are designed to work **across projects**, not just inside this vault — they're the bridge between any project you're working in and your knowledge base:
+
+- **`/wiki-update`** — *push.* From any project directory, distill what you've been working on into the vault. The skill figures out which project bucket the knowledge belongs in.
+- **`/wiki-query`** — *pull.* From any project directory, ask a question and get a cited answer assembled from the wiki. No need to be inside the vault.
+
+Together they let you treat the vault as a long-term memory store that you can read from and write to no matter which project you're currently in.
 
 ---
 
