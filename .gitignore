@@ -1,0 +1,38 @@
+# ─── Obsidian (per-machine state only) ─────────────────────────────────────
+# Share app.json, appearance.json, graph.json, core-plugins.json, workspace.json,
+# hotkeys.json, etc. Only exclude installed plugins (binary/large) and caches.
+.obsidian/plugins/
+.obsidian/themes/
+.obsidian/cache
+
+# ─── Agent runtime state ───────────────────────────────────────────────────
+# Keep skill definitions tracked; ignore only ephemeral runtime artifacts.
+.claude/logs/
+.claude/scheduled_tasks.json
+.claude/sessions/
+.claude/worktrees/
+.claude/local/
+.agents/runtime/
+.hermes/runtime/
+.hermes/sessions/
+
+# ─── QMD index (regenerable) ───────────────────────────────────────────────
+.qmd/
+qmd-cache/
+
+# ─── OS / editor cruft ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# ─── Python / Node (if any tooling lands here) ─────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+*.log
